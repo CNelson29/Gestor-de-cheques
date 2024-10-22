@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Gestión de Ventas</h2>
+
+<!-- Botón en forma de cruz para abrir la ventana modal -->
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addSaleModal">
+    &#x271A; <!-- Cruz -->
+</button>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for venta in ventas %}
+        <tr>
+            <td>{{ venta[0] }}</td>
+            <td>{{ venta[1] }}</td>
+            <td>{{ venta[2] }}</td>
+            <td>{{ venta[3] }}</td>
+            <td>{{ venta[4] }}</td>
+            <td>{{ venta[5] }}</td>
+            <td>
+                <a href="{{ url_for('eliminar_venta', id=venta[0]) }}" class="btn btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Ventana Modal para agregar una venta -->
+<div class="modal fade" id="addSaleModal" tabindex="-1" aria-labelledby="addSaleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSaleModalLabel">Agregar Venta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('agregar_venta') }}" method="post">
+                    <label for="producto_id">Producto:</label>
+                    <select id="producto_id" name="producto_id" required>
+                        {% for producto in productos %}
+                        <option value="{{ producto[0] }}">{{ producto[1] }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <br>
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" name="cantidad" id="cantidad" min="1" required>
+                    
+                    <br>
+                    <label for="fecha">Fecha de Venta:</label>
+                    <input type="datetime-local" name="fecha" id="fecha" required>
+                    
+                    <input type="submit" class="btn btn-success" value="Agregar Venta">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
