@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Tu Título{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='StyleII.css') }}">
 </head>
 <body>
     <header>
-        <h1>Bienvenido a Mi Aplicación</h1>
+        <h1>Bienvenido</h1>
         <nav>
             <a href="{{ url_for('productos') }}">Productos</a>
             <a href="{{ url_for('ver_ventas') }}">Ventas</a>
@@ -19,14 +20,14 @@
         {% block content %}
         {% endblock %}
     </main>
-    
+
     <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
     <footer>
-        <p>&copy; 2024 Mi Aplicación</p>
+        <p>&copy; 2024 - CN - WebApp</p>
     </footer>
 </body>
 </html>
