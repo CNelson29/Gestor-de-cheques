@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Tu Título{% endblock %}</title>
+    <title>{% block title %}cheques_app{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='StyleII.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='scripts.js') }}" defer></script>
 </head>
 <body>
+<div>
     <header>
-        <h1>Bienvenido</h1>
+        <h1>Gestor de Cheques</h1>
+        <p>Total confidencialidad.</p>
         <nav>
-            <a href="{{ url_for('productos') }}">Productos</a>
-            <a href="{{ url_for('ver_ventas') }}">Ventas</a>
+            <a href="{{ url_for('home') }}">Inicio</a>
+            <a href="{{ url_for('concepto') }}">Conceptos</a>
+            <a href="{{ url_for('proveedor') }}">Proveedor</a>
         </nav>
     </header>
     
@@ -25,9 +29,12 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<!-- Barra lateral -->
+<script src="js/sidebar.js"></script>
 
     <footer>
         <p>&copy; 2024 - CN - WebApp</p>
     </footer>
+</div>
 </body>
 </html>
