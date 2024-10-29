@@ -13,72 +13,82 @@ app.config['SECRET_KEY'] = '7110c8ae51a4b5af97be6534caef90e4bb9bdcb3380af008f90b
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------- parte nueva
 
-@app.route('/productos')
-def productos():
-    producto_s = query_db('''
-        SELECT * FROM productos 
-    ''')
-    return render_template('productos.html', producto_s=producto_s)
+@app.route('/home')
+def home():
+    return render_template('layout.html')
 
-@app.route('/productos/agregar', methods=['POST'])
-def agregar_producto():
-    nombre = request.form['nombre']
-    tipo = request.form['tipo']
-    marca = request.form['marca']
-    stock = request.form['Stock']
+@app.route('/home/conceptos')
+def concepto():
+    conceptos = query_db('SELECT * FROM conceptos')
+    return render_template('conceptos/index.html',conceptos=conceptos)
+
+@app.route('/home/conceptos/Agregar', methods=['POST'])
+def concepto_agregar():
+    descripcion = request.form['descripcion']
+    estado = request.form.get('estado', '0')  # Valor predeterminado '0' si no está marcado
+
     execute_db('''
-        INSERT INTO productos (nombre, tipo, marca, Stock)
-        VALUES (%s, %s, %s, %s)
-    ''', (nombre, tipo, marca, stock))
-    flash('Producto agregado exitosamente')
-    return redirect(url_for('productos'))
+        INSERT INTO conceptos (descripcion, estado)
+        VALUES (%s, %s)
+    ''', (descripcion, estado))
+    flash('Concepto agregado exitosamente')
+    return redirect(url_for('concepto'))
 
-@app.route('/productos/eliminar/<int:id>')
-def eliminar_producto(id):
-    execute_db('DELETE FROM productos WHERE id = %s', (id,))
-    flash('Producto eliminado exitosamente')
-    return redirect(url_for('productos'))
 
-@app.route('/ventas')
-def ver_ventas():
+@app.route('/home/conceptos/eliminar/<int:id>')
+def eliminar_concepto(id):
+    execute_db('DELETE FROM conceptos WHERE id_concepto = %s', (id,))
+    flash('Concepto eliminado exitosamente')
+    return redirect(url_for('concepto'))
+
+@app.route('/home/proveedores')
+def proveedor():
 # Consulta para obtener las ventas y detalles de los productos
-    ventas = query_db('''
+    proveedor = query_db('''
         SELECT v.id, p.nombre AS producto, v.cantidad, v.fecha 
         FROM ventas v
         JOIN productos p ON v.producto_id = p.id
     ''')
     
     # Consulta para obtener todos los productos disponibles
-    productos = query_db('SELECT * FROM productos')
+    proveedores = query_db('SELECT * FROM proveedores')
 
-    return render_template('ver_ventas.html', ventas=ventas, productos=productos)
+    return render_template('proveedores/index.html', proveedores=proveedores)
 
-@app.route('/ventas/agregar', methods=['GET', 'POST'])
-def agregar_venta():
+@app.route('/home/proveedores/agregar', methods=['GET', 'POST'])
+def agregar_proveedor():
     if request.method == 'POST':
-        producto_id = request.form['producto_id']
-        cantidad = int(request.form['cantidad'])
-        fecha = request.form['fecha']
+        # Recuperar los datos del formulario
+        nombre = request.form.get('nombre')
+        tipo_persona = request.form.get('tipo_persona')
+        identificacion = request.form.get('identificacion')
+        balance = request.form.get('balance', 0.0)  # Balance opcional, valor predeterminado 0.0
+        cuenta_contable = request.form.get('cuenta_contable', None)  # Campo opcional
+        estado = request.form.get('estado', '1')  # Estado activo por defecto ('1' para activo, '0' para inactivo)
 
-        # Agregar la venta
+        # Validación simple
+        if not nombre or not tipo_persona or not identificacion:
+            flash("Por favor, completa todos los campos obligatorios.")
+            return redirect(url_for('proveedor'))  # Redirige si falta algún campo obligatorio
+
+        # Insertar el proveedor en la base de datos
         execute_db('''
-            INSERT INTO ventas (producto_id, cantidad, fecha)
-            VALUES (%s, %s, %s)
-        ''', (producto_id, cantidad, fecha))
+            INSERT INTO proveedores (nombre, tipo_persona, identificacion, balance, cuenta_contable, estado)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (nombre, tipo_persona, identificacion, balance, cuenta_contable, estado))
 
-        # Actualizar el stock del producto
-        execute_db('''
-            UPDATE productos SET Stock = Stock - %s WHERE id = %s
-        ''', (cantidad, producto_id))
+        flash('Proveedor agregado exitosamente')
+        return redirect(url_for('proveedor'))
 
-        flash('Venta agregada exitosamente')
-        return redirect(url_for('ver_ventas'))  # Asegúrate de que esta ruta exista
+    # GET request para mostrar el formulario de agregar
+    return render_template('proveedores/index.html')
 
-@app.route('/ventas/eliminar/<int:id>')
-def eliminar_venta(id):
-    execute_db('DELETE FROM ventas WHERE id = %s', (id,))
-    flash('Venta eliminada exitosamente')
-    return redirect(url_for('ver_ventas'))
+
+@app.route('/home/proveedores/eliminar/<int:id>')
+def eliminar_proveedor(id):
+    execute_db('DELETE FROM proveedores WHERE id_proveedor = %s', (id,))
+    flash('proveedor eliminado exitosamente')
+    return redirect(url_for('proveedor'))
 
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------
